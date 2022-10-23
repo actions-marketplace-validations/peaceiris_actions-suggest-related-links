@@ -14,32 +14,16 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-18.04
-    timeout-minutes: 3
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
 
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "${GITHUB_CONTEXT}"
-
-      - name: Read .nvmrc
-        run: echo "::set-output name=NVMRC::$(cat .nvmrc)"
-        id: nvm
-
+      # https://github.com/actions/setup-node/releases
       - name: Setup Node
-        uses: actions/setup-node@v3.1.1
+        uses: actions/setup-node@v3.5.1
         with:
-          node-version: '${{ steps.nvm.outputs.NVMRC }}'
-
-      - run: npm i -g npm
-
-      - name: Dump version
-        run: |
-          node -v
-          npm --version
-          git --version
+          node-version-file: ".nvmrc"
 
       - run: npm ci
       - run: npm run fmt:check
